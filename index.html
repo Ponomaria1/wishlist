@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Подырки</title>
+    <link rel="stylesheet" href="style.css">
+    
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1><img src="images/bb.png" alt="" style="width: 50px; height: 50px; display: inline-block; vertical-align: middle;"> выбери <br> дары <img src="images/bb.png" alt="" style="width: 50px; height: 50px; display: inline-block; vertical-align: middle;"></h1>
+            <p class="subtitle">бууб в нос </p>
+        </header>
+
+        <!-- Имя пользователя -->
+               <!-- Приветственный текст -->
+        <div class="welcome-text">
+            <p>
+                всем привет мои роднульки 
+                <img src="images/hehehe.png" alt="" style="width: 50px; height: 40px; display: inline-block; vertical-align: middle;">, 
+                я вас жду у себя и без подарков, это я сделала чтоб вы не ломали голову и может что-нибудь приглядите себе
+                <img src="images/hihih.png" alt="" style="width: 50px; height: 50px; display: inline-block; vertical-align: middle;"> 
+                скидываю сейчас только потому что некоторые подарки едут долго
+                <br>
+                <img src="images/hohoh.png" alt="" style="width: 55px; height: 40px; display: inline-block; vertical-align: middle;"> <span>хихик</span><img src="images/hohoh.png" alt="" style="width: 55px; height: 40px; display: inline-block; vertical-align: middle;"> 
+            </p>
+        </div>
+
+        <!-- Основной список подарков -->
+        <h2> ееэххх мечты <img src="images/plese.png" alt="" style="width: 50px; height: 50px; display: inline-block; vertical-align: middle;"> мои мечты <img src="images/plese.png" alt="" style="width: 50px; height: 50px; display: inline-block; vertical-align: middle;"></h2>
+        <div id="giftList" class="gift-grid"></div>
+
+        <!-- Забронированные подарки -->
+        <div id="bookedSection" style="display: none;">
+            <h2> Забронированные подарки</h2>
+            <div id="bookedList" class="gift-grid"></div>
+        </div>
+
+        <!-- Купленные подарки (только для текущего пользователя) -->
+<div id="purchasedSection" style="display: none;">
+    <h2> воувоувоу ну ты что</h2>
+    <p style="color: #7a6a5a; font-style: italic; margin-bottom: 15px;"> ❤️</p>
+    <div id="purchasedList" class="gift-grid"></div>
+</div>
+
+    <div class="stats">
+    <span> Всего: <strong id="totalCount">0</strong></span>
+    <span> Думают: <strong id="bookedCount">0</strong></span>
+    <span> Осталось: <strong id="remainingCount">0</strong></span>
+</div>
+
+    <script src="script.js"></script>
+</body>
+</html>
