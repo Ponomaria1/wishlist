@@ -1,56 +1,433 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Подырки</title>
-    <link rel="stylesheet" href="style.css">
-    
+    <style>
+        /* ===== СТИЛИ (твои) ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: #f5f0eb;
+            padding: 20px;
+            color: #3d2c1e;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        header h1 {
+            font-size: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        header h1 img {
+            width: 50px;
+            height: 50px;
+            display: inline-block;
+            vertical-align: middle;
+        }
+        .subtitle {
+            font-size: 22px;
+            color: #8a7a6a;
+            font-style: italic;
+        }
+        .welcome-text {
+            background: rgba(255, 248, 240, 0.7);
+            backdrop-filter: blur(4px);
+            padding: 20px 30px;
+            border-radius: 30px;
+            margin-bottom: 35px;
+            border: 2px solid #f0ddd5;
+            text-align: center;
+            font-size: 18px;
+            line-height: 1.8;
+        }
+        .welcome-text img {
+            width: 50px;
+            height: 40px;
+            display: inline-block;
+            vertical-align: middle;
+        }
+        .welcome-text .giggle {
+            display: inline-block;
+            font-size: 20px;
+            font-weight: 600;
+            color: #dbb5a5;
+            animation: giggleAnim 2s ease-in-out infinite;
+        }
+        @keyframes giggleAnim {
+            0%, 100% { transform: rotate(-3deg) scale(1); }
+            50% { transform: rotate(3deg) scale(1.05); }
+        }
+        .stats {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            background: rgba(255, 255, 255, 0.7);
+            padding: 15px 20px;
+            border-radius: 60px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+        .stats strong {
+            font-size: 24px;
+        }
+        h2 {
+            font-size: 28px;
+            margin: 30px 0 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        h2 img {
+            width: 50px;
+            height: 50px;
+            display: inline-block;
+            vertical-align: middle;
+        }
+        .gift-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        .gift-card {
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.06);
+            border: 1px solid #f0ebe5;
+            position: relative;
+        }
+        .gift-card.booked {
+            opacity: 0.7;
+            background: #faf8f6;
+        }
+        .gift-card.booked::after {
+            content: '🔒 ЗАБРОНИРОВАН';
+            position: absolute;
+            top: 15px;
+            right: -30px;
+            background: #d4c5b5;
+            color: #3d2c1e;
+            padding: 4px 30px;
+            transform: rotate(45deg);
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: 1px;
+            z-index: 10;
+            text-transform: uppercase;
+        }
+        .gift-image {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+            background: #eae3db;
+        }
+        .gift-info {
+            padding: 18px;
+        }
+        .gift-info h3 {
+            font-size: 18px;
+            margin-bottom: 8px;
+        }
+        .gift-details {
+            font-size: 13px;
+            color: #6f5f4f;
+            margin-bottom: 10px;
+        }
+        .store {
+            display: inline-block;
+            padding: 2px 12px;
+            border-radius: 40px;
+            font-size: 12px;
+            font-weight: 600;
+            background: #f5f0eb;
+        }
+        .store.ozon {
+            background: #e3f0ff;
+            color: #0066cc;
+        }
+        .store.wb {
+            background: #f0e6f5;
+            color: #7b3f8a;
+        }
+        .gift-link {
+            color: #8a7a6a;
+            text-decoration: none;
+            font-size: 13px;
+            border-bottom: 1px dotted #dcd3c9;
+        }
+        .gift-price {
+            font-size: 24px;
+            font-weight: 700;
+            margin: 8px 0 12px;
+        }
+        .gift-actions {
+            display: flex;
+            gap: 8px;
+        }
+        .gift-actions button {
+            flex: 1;
+            padding: 10px 12px;
+            border: none;
+            border-radius: 40px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .btn-book {
+            background: #3d2c1e;
+            color: white;
+        }
+        .btn-book:hover {
+            background: #2a1e14;
+        }
+        .btn-unbook {
+            background: #e8ddd0;
+            color: #3d2c1e;
+        }
+        .btn-unbook:hover {
+            background: #d5c7b8;
+        }
+        .booked-by-other {
+            width: 100%;
+            text-align: center;
+            color: #8a7a6a;
+            font-size: 14px;
+            padding: 8px 0;
+        }
+        .empty-message {
+            text-align: center;
+            color: #8a7a6a;
+            padding: 40px;
+            background: #faf8f6;
+            border-radius: 30px;
+            border: 2px dashed #dcd3c9;
+        }
+        @media (max-width: 600px) {
+            header h1 { font-size: 32px; }
+            header h1 img { width: 35px; height: 35px; }
+            .stats { gap: 15px; }
+            .gift-grid { grid-template-columns: 1fr; }
+            .welcome-text { font-size: 15px; padding: 15px; }
+            .welcome-text img { width: 35px; height: 30px; }
+        }
+    </style>
 </head>
 <body>
     <div class="container">
         <header>
-            <h1><img src="images/bb.png" alt="" style="width: 50px; height: 50px; display: inline-block; vertical-align: middle;"> выбери <br> дары <img src="images/bb.png" alt="" style="width: 50px; height: 50px; display: inline-block; vertical-align: middle;"></h1>
+            <h1>
+                <img src="images/bb.png" alt=""> выбери дары <img src="images/bb.png" alt="">
+            </h1>
             <p class="subtitle">бууб в нос </p>
         </header>
 
-        <!-- Имя пользователя -->
-               <!-- Приветственный текст -->
+        <!-- ПРИВЕТСТВИЕ -->
         <div class="welcome-text">
             <p>
-                всем привет мои роднульки 
-                <img src="images/hehehe.png" alt="" style="width: 50px; height: 40px; display: inline-block; vertical-align: middle;">, 
+                всем привет мои роднульки
+                <img src="images/hehehe.png" alt="">
                 я вас жду у себя и без подарков, это я сделала чтоб вы не ломали голову и может что-нибудь приглядите себе
-                <img src="images/hihih.png" alt="" style="width: 50px; height: 50px; display: inline-block; vertical-align: middle;"> 
+                <img src="images/hihih.png" alt="">
                 скидываю сейчас только потому что некоторые подарки едут долго
                 <br>
-                <img src="images/hohoh.png" alt="" style="width: 55px; height: 40px; display: inline-block; vertical-align: middle;"> <span>хихик</span><img src="images/hohoh.png" alt="" style="width: 55px; height: 40px; display: inline-block; vertical-align: middle;"> 
+                <img src="images/hohoh.png" alt=""> <span class="giggle">хихик</span> <img src="images/hohoh.png" alt="">
             </p>
         </div>
 
-        <!-- Основной список подарков -->
-        <h2> ееэххх мечты <img src="images/plese.png" alt="" style="width: 50px; height: 50px; display: inline-block; vertical-align: middle;"> мои мечты <img src="images/plese.png" alt="" style="width: 50px; height: 50px; display: inline-block; vertical-align: middle;"></h2>
-        <div id="giftList" class="gift-grid"></div>
-
-        <!-- Забронированные подарки -->
-        <div id="bookedSection" style="display: none;">
-            <h2> Забронированные подарки</h2>
-            <div id="bookedList" class="gift-grid"></div>
+        <!-- СТАТИСТИКА -->
+        <div class="stats">
+            <span> Всего: <strong id="totalCount">0</strong></span>
+            <span> Думают: <strong id="bookedCount">0</strong></span>
+            <span> Осталось: <strong id="remainingCount">0</strong></span>
         </div>
 
-        <!-- Купленные подарки (только для текущего пользователя) -->
-<div id="purchasedSection" style="display: none;">
-    <h2> воувоувоу ну ты что</h2>
-    <p style="color: #7a6a5a; font-style: italic; margin-bottom: 15px;"> ❤️</p>
-    <div id="purchasedList" class="gift-grid"></div>
-</div>
+        <!-- ОСНОВНОЙ СПИСОК -->
+        <h2>ееэххх мечта <img src="images/plese.png" alt=""></h2>
+        <div id="giftList" class="gift-grid"></div>
 
-    <div class="stats">
-    <span> Всего: <strong id="totalCount">0</strong></span>
-    <span> Думают: <strong id="bookedCount">0</strong></span>
-    <span> Осталось: <strong id="remainingCount">0</strong></span>
-</div>
+        <!-- ЗАБРОНИРОВАННЫЕ -->
+        <div id="bookedSection" style="display: none;">
+            <h2>забронированные дары</h2>
+            <div id="bookedList" class="gift-grid"></div>
+        </div>
+    </div>
 
-    <script src="script.js"></script>
+    <script>
+        // ===== НАСТРОЙКИ SUPABASE =====
+        const SUPABASE_URL = 'https://kthzgdrvgkaujatmpndx.supabase.co';
+        const SUPABASE_KEY = 'sb_publishable_OQ44wevV1iJtIYwqeueuKg_mrpLEBLu';
+        // =============================
+
+        // ===== ТВОИ ПОДАРКИ =====
+        const defaultGifts = [
+            { id: 1, name: 'мили чехол для наушников', image: 'https://ir-11.ozone.ru/s3/multimedia-4/wc2500/6828136024.jpg', link: 'https://ozon.ru/t/cFBeDQs', store: 'ozon', article: '3064683607', price: 275 },
+            { id: 2, name: 'маленькая картина по номерам', image: 'https://ir-11.ozone.ru/s3/multimedia-1-x/wc2500/8430564381.jpg', link: 'https://ozon.ru/t/BSFPL8A', store: 'ozon', article: '3172102168', price: 197 },
+            { id: 3, name: 'хна для души', image: 'https://ir-11.ozone.ru/s3/multimedia-1-2/wc2500/8564663126.jpg', link: 'https://ozon.ru/t/1fWqTMd', store: 'ozon', article: '3209989085', price: 76 },
+            { id: 4, name: 'скетч для зарисовки прн', image: 'https://ir-11.ozone.ru/s3/multimedia-1-o/wc2500/12356962080.jpg', link: 'https://ozon.ru/t/CrKZIbI', store: 'ozon', article: '1527138289', price: 187 },
+            { id: 5, name: 'сережки чтобы было', image: 'https://ir-11.ozone.ru/s3/multimedia-1-5/wc2500/8461787009.jpg', link: 'https://ozon.ru/t/yetFkGc', store: 'ozon', article: '3193052913', price: 139 },
+            { id: 6, name: 'хна но розовая', image: 'https://ir-11.ozone.ru/s3/multimedia-1-8/wc2500/8564905556.jpg', link: 'https://ozon.ru/t/3Ql23CA', store: 'ozon', article: '3209988515', price: 76 },
+            { id: 7, name: 'подставка для кампуктера', image: 'https://ir-11.ozone.ru/s3/multimedia-1-4/wc2500/10793183656.jpg', link: 'https://ozon.ru/t/TOHWdWs', store: 'ozon', article: '1831342831', price: 309 },
+            { id: 8, name: 'пушистый лис', image: 'https://ir-11.ozone.ru/s3/multimedia-1-9/wc1000/7530845481.jpg', link: 'https://ozon.ru/t/1fWDQgv', store: 'ozon', article: '2102653324', price: 329 },
+            { id: 9, name: 'нужно больше золота', image: 'https://ir-11.ozone.ru/s3/multimedia-w/wc1000/6753981560.jpg', link: 'https://ozon.ru/t/j79Trpb', store: 'ozon', article: '1183342795', price: 246 },
+            { id: 10, name: 'коробка для сороки', image: 'https://ir-11.ozone.ru/s3/multimedia-1-p/wc1000/7633218193.jpg', link: 'https://ozon.ru/t/l1QHZk7', store: 'ozon', article: '2320701098', price: 383 },
+            { id: 11, name: 'карандаш я не Даша', image: 'https://basket-38.wbbasket.ru/vol8505/part850566/850566911/images/big/1.webp', link: 'https://www.wildberries.ru/catalog/850566911/detail.aspx?size=1279153659', store: 'wb', article: '850566911', price: 281 },
+            { id: 12, name: 'помада да', image: 'https://sam-basket-cdn-05.geobasket.ru/vol87/part8769/8769539/images/big/2.webp', link: 'https://www.wildberries.ru/catalog/8769539/detail.aspx?size=29529518', store: 'wb', article: '8769539', price: 504 },
+            { id: 13, name: 'цифра номер 5 аааахахаха я художник', image: 'https://basket-01.wbbasket.ru/vol130/part13083/13083152/images/big/2.webp', link: 'https://www.wildberries.ru/catalog/13083152/detail.aspx?size=40015890', store: 'wb', article: '13083152', price: 702 },
+            { id: 14, name: 'проснулась сорока', image: 'https://sam-basket-cdn-07.geobasket.ru/vol2091/part209131/209131541/images/big/5.webp', link: 'https://www.wildberries.ru/catalog/209131541/detail.aspx?size=335044304', store: 'wb', article: '209131541', price: 48 },
+            { id: 15, name: 'кьюти панда', image: 'https://ir-11.ozone.ru/s3/multimedia-1-b/wc2500/8485525811.jpg', link: 'https://ozon.ru/t/bTpQQGq', store: 'ozon', article: '3205880143', price: 482 },
+            { id: 16, name: 'крем для лица нуф ниф наф', image: 'https://ir-11.ozone.ru/s3/multimedia-1-j/wc2500/11912459455.jpg', link: 'https://ozon.ru/t/bTpQ91U', store: 'ozon', article: '1134268444', price: 452 },
+            { id: 17, name: 'лицевая сыроворотка', image: 'https://ir-11.ozone.ru/s3/multimedia-1-x/wc1000/8362431141.jpg', link: 'https://ozon.ru/t/OyqcfhB', store: 'ozon', article: '1819863033', price: 553 },
+            { id: 18, name: 'мне оно надо', image: 'https://ir-11.ozone.ru/s3/multimedia-j/wc1000/6740812099.jpg', link: ' https://ozon.ru/t/1fW3k10', store: 'ozon', article: '1161787031', price: 1335 },
+            { id: 19, name: 'захотелось мне научиться краситься', image: 'https://ir-11.ozone.ru/s3/multimedia-1-g/wc1000/8963295244.jpg', link: 'https://ozon.ru/t/bTpQlHE', store: 'ozon', article: '1720641233', price: 428 },
+            { id: 20, name: 'БольшООООй дракон', image: 'https://ir-11.ozone.ru/s3/multimedia-1-w/wc1000/8145213440.jpg', link: 'https://ozon.ru/t/zLDJZTe', store: 'ozon', article: '1985939191', price: 685 }
+        ];
+
+        let gifts = [];
+        let deviceId = localStorage.getItem('deviceId');
+        if (!deviceId) {
+            deviceId = 'user_' + Date.now() + '_' + Math.random().toString(36).substr(2, 6);
+            localStorage.setItem('deviceId', deviceId);
+        }
+
+        // ===== ЗАГРУЗКА ИЗ SUPABASE =====
+        async function loadFromSupabase() {
+            try {
+                const response = await fetch(`${SUPABASE_URL}/rest/v1/gifts?select=*`, {
+                    headers: {
+                        'apikey': SUPABASE_KEY,
+                        'Authorization': 'Bearer ' + SUPABASE_KEY
+                    }
+                });
+                if (!response.ok) throw new Error('Ошибка загрузки');
+                const data = await response.json();
+                if (data && data.length > 0) {
+                    gifts = data;
+                } else {
+                    gifts = JSON.parse(JSON.stringify(defaultGifts));
+                    await saveToSupabase();
+                }
+            } catch (error) {
+                console.log('Используем локальные данные');
+                const saved = localStorage.getItem('gifts_backup');
+                gifts = saved ? JSON.parse(saved) : JSON.parse(JSON.stringify(defaultGifts));
+            }
+            render();
+        }
+
+        // ===== СОХРАНЕНИЕ В SUPABASE =====
+        async function saveToSupabase() {
+            try {
+                await fetch(`${SUPABASE_URL}/rest/v1/gifts?booked=eq.false`, {
+                    method: 'DELETE',
+                    headers: {
+                        'apikey': SUPABASE_KEY,
+                        'Authorization': 'Bearer ' + SUPABASE_KEY
+                    }
+                });
+                for (const gift of gifts) {
+                    await fetch(`${SUPABASE_URL}/rest/v1/gifts`, {
+                        method: 'POST',
+                        headers: {
+                            'apikey': SUPABASE_KEY,
+                            'Authorization': 'Bearer ' + SUPABASE_KEY,
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(gift)
+                    });
+                }
+                localStorage.setItem('gifts_backup', JSON.stringify(gifts));
+            } catch (error) {
+                console.log('Ошибка сохранения:', error);
+            }
+        }
+
+        // ===== РЕНДЕРИНГ =====
+        function render() {
+            const available = gifts.filter(g => !g.booked);
+            const booked = gifts.filter(g => g.booked);
+            document.getElementById('giftList').innerHTML = available.length === 0
+                ? '<div class="empty-message">все дары уже забронированы!</div>'
+                : available.map(g => createCard(g)).join('');
+            const section = document.getElementById('bookedSection');
+            if (booked.length === 0) {
+                section.style.display = 'none';
+            } else {
+                section.style.display = 'block';
+                document.getElementById('bookedList').innerHTML = booked.map(g => createCard(g, true)).join('');
+            }
+            document.getElementById('totalCount').textContent = gifts.length;
+            document.getElementById('bookedCount').textContent = booked.length;
+            document.getElementById('remainingCount').textContent = available.length;
+        }
+
+        function createCard(gift, isBooked = false) {
+            const isMine = gift.bookedBy === deviceId;
+            const isOther = gift.booked && gift.bookedBy !== deviceId;
+            const storeName = gift.store === 'ozon' ? 'Ozon' : 'Wildberries';
+            const storeClass = gift.store === 'ozon' ? 'ozon' : 'wb';
+            let actions = '';
+            if (!gift.booked) actions = `<button class="btn-book" onclick="bookGift(${gift.id})">подумаю</button>`;
+            else if (isMine) actions = `<button class="btn-unbook" onclick="unbookGift(${gift.id})">не получилось не фортануло</button>`;
+            else if (isOther) actions = `<div class="booked-by-other">кто-то думает</div>`;
+            return `
+                <div class="gift-card ${isBooked ? 'booked' : ''}">
+                    <img src="${gift.image}" class="gift-image" onerror="this.src='https://via.placeholder.com/400x200/666/white?text=Подарок'">
+                    <div class="gift-info">
+                        <h3>${gift.name}</h3>
+                        <div class="gift-details">
+                            <span class="store ${storeClass}">${storeName}</span>
+                            <span>Артикул: ${gift.article}</span>
+                            <a href="${gift.link}" target="_blank" class="gift-link">🔗 Ссылка</a>
+                        </div>
+                        <div class="gift-price">${gift.price.toLocaleString()} ₽</div>
+                        <div class="gift-actions">${actions}</div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // ===== ДЕЙСТВИЯ =====
+        async function bookGift(id) {
+            const gift = gifts.find(g => g.id === id);
+            if (!gift || gift.booked) return;
+            if (!confirm(`беру на заметку "${gift.name}"?`)) return;
+            gift.booked = true;
+            gift.bookedBy = deviceId;
+            await saveToSupabase();
+            render();
+            alert(' дар твой! никто не заберёт!');
+        }
+
+        async function unbookGift(id) {
+            const gift = gifts.find(g => g.id === id);
+            if (!gift || gift.bookedBy !== deviceId) return;
+            if (!confirm(`подумай "${gift.name}"? ты отменишь..😢`)) return;
+            gift.booked = false;
+            gift.bookedBy = null;
+            await saveToSupabase();
+            render();
+            alert('нищита!');
+        }
+
+        // ===== ЗАПУСК =====
+        loadFromSupabase();
+    </script>
 </body>
 </html>
