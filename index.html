@@ -251,9 +251,9 @@
         </div>
 
         <div class="stats">
-            <span> Всего: <strong id="totalCount">0</strong></span>
+            <span>Всего: <strong id="totalCount">0</strong></span>
             <span> Думают: <strong id="bookedCount">0</strong></span>
-            <span> Осталось: <strong id="remainingCount">0</strong></span>
+            <span>Осталось: <strong id="remainingCount">0</strong></span>
         </div>
 
         <h2>ееэххх мечта <img src="images/plese.png" alt=""></h2>
@@ -271,7 +271,7 @@
         const SUPABASE_KEY = 'sb_publishable_OQ44wevV1iJtIYwqeueuKg_mrpLEBLu';
         // =============================
 
-        // ===== ТВОИ ПОДАРКИ =====
+        // ===== ВСЕ ТВОИ 20 ПОДАРКОВ =====
         const defaultGifts = [
             { id: 1, name: 'мили чехол для наушников', image: 'https://ir-11.ozone.ru/s3/multimedia-4/wc2500/6828136024.jpg', link: 'https://ozon.ru/t/cFBeDQs', store: 'ozon', article: '3064683607', price: 275 },
             { id: 2, name: 'маленькая картина по номерам', image: 'https://ir-11.ozone.ru/s3/multimedia-1-x/wc2500/8430564381.jpg', link: 'https://ozon.ru/t/BSFPL8A', store: 'ozon', article: '3172102168', price: 197 },
@@ -302,7 +302,7 @@
             localStorage.setItem('deviceId', deviceId);
         }
 
-        // ===== ЗАГРУЗКА ИЗ SUPABASE (ОБНОВЛЁННАЯ) =====
+        // ===== ЗАГРУЗКА ИЗ SUPABASE =====
         async function loadFromSupabase() {
             try {
                 const response = await fetch(`${SUPABASE_URL}/rest/v1/gifts?select=*`, {
@@ -313,21 +313,30 @@
                 });
                 if (!response.ok) throw new Error('Ошибка загрузки');
                 const data = await response.json();
+
+                // Проверяем, есть ли данные в базе
                 if (data && data.length > 0) {
                     gifts = data;
+                    console.log(' Загружено из Supabase:', gifts.length);
                 } else {
+                    // Если база пуста — загружаем дефолтные подарки
                     gifts = JSON.parse(JSON.stringify(defaultGifts));
                     await saveToSupabase();
+                    console.log(' Загружены дефолтные подарки');
                 }
             } catch (error) {
-                console.log('Используем локальные данные');
+                console.log(' Ошибка загрузки, используем локальные данные');
                 const saved = localStorage.getItem('gifts_backup');
-                gifts = saved ? JSON.parse(saved) : JSON.parse(JSON.stringify(defaultGifts));
+                if (saved) {
+                    gifts = JSON.parse(saved);
+                } else {
+                    gifts = JSON.parse(JSON.stringify(defaultGifts));
+                }
             }
             render();
         }
 
-        // ===== СОХРАНЕНИЕ В SUPABASE (ОБНОВЛЁННОЕ) =====
+        // ===== СОХРАНЕНИЕ В SUPABASE =====
         async function saveToSupabase() {
             try {
                 for (const gift of gifts) {
@@ -341,7 +350,7 @@
                     const existing = await checkResponse.json();
 
                     if (existing && existing.length > 0) {
-                        // Обновляем существующий подарок
+                        // Обновляем только поля booked и bookedBy
                         await fetch(`${SUPABASE_URL}/rest/v1/gifts?id=eq.${gift.id}`, {
                             method: 'PATCH',
                             headers: {
@@ -368,9 +377,9 @@
                     }
                 }
                 localStorage.setItem('gifts_backup', JSON.stringify(gifts));
-                console.log(' Данные сохранены');
+                console.log(' Данные сохранены в Supabase');
             } catch (error) {
-                console.log('Ошибка сохранения:', error);
+                console.log(' Ошибка сохранения:', error);
             }
         }
 
@@ -423,7 +432,7 @@
         async function bookGift(id) {
             const gift = gifts.find(g => g.id === id);
             if (!gift || gift.booked) return;
-            if (!confirm(`беру на заметку "${gift.name}"?`)) return;
+            if (!confirm(`беру на заметку "${gift.name}"? `)) return;
             gift.booked = true;
             gift.bookedBy = deviceId;
             await saveToSupabase();
@@ -439,7 +448,7 @@
             gift.bookedBy = null;
             await saveToSupabase();
             render();
-            alert('нищита!');
+            alert(' нищита!');
         }
 
         // ===== ЗАПУСК =====
