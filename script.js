@@ -13,9 +13,7 @@ const defaultGifts = [
         article: '3064683607',
         price: 275,
         booked: false,
-        bookedBy: null,
-        purchased: false,
-        purchasedBy: null
+        bookedBy: null
     },
     {
         id: 2,
@@ -26,9 +24,7 @@ const defaultGifts = [
         article: '3172102168',
         price: 197,
         booked: false,
-        bookedBy: null,
-        purchased: false,
-        purchasedBy: null
+        bookedBy: null
     },
     {
         id: 3,
@@ -39,9 +35,7 @@ const defaultGifts = [
         article: '3209989085',
         price: 76,
         booked: false,
-        bookedBy: null,
-        purchased: false,
-        purchasedBy: null
+        bookedBy: null
     },
     {
         id: 4,
@@ -52,9 +46,7 @@ const defaultGifts = [
         article: '1527138289',
         price: 187,
         booked: false,
-        bookedBy: null,
-        purchased: false,
-        purchasedBy: null
+        bookedBy: null
     },
     {
         id: 5,
@@ -65,9 +57,7 @@ const defaultGifts = [
         article: '3193052913',
         price: 139,
         booked: false,
-        bookedBy: null,
-        purchased: false,
-        purchasedBy: null
+        bookedBy: null
     },
     {
         id: 6,
@@ -78,9 +68,7 @@ const defaultGifts = [
         article: '3209988515',
         price: 76,
         booked: false,
-        bookedBy: null,
-        purchased: false,
-        purchasedBy: null
+        bookedBy: null
     },
     {
         id: 7,
@@ -91,9 +79,7 @@ const defaultGifts = [
         article: '1831342831',
         price: 309,
         booked: false,
-        bookedBy: null,
-        purchased: false,
-        purchasedBy: null
+        bookedBy: null
     },
     {
         id: 8,
@@ -104,9 +90,7 @@ const defaultGifts = [
         article: '2102653324',
         price: 329,
         booked: false,
-        bookedBy: null,
-        purchased: false,
-        purchasedBy: null
+        bookedBy: null
     },
     {
         id: 9,
@@ -117,9 +101,7 @@ const defaultGifts = [
         article: '1183342795',
         price: 246,
         booked: false,
-        bookedBy: null,
-        purchased: false,
-        purchasedBy: null
+        bookedBy: null
     },
     {
         id: 10,
@@ -130,9 +112,7 @@ const defaultGifts = [
         article: '2320701098',
         price: 383,
         booked: false,
-        bookedBy: null,
-        purchased: false,
-        purchasedBy: null
+        bookedBy: null
     },
     {
         id: 11,
@@ -143,9 +123,7 @@ const defaultGifts = [
         article: '850566911',
         price: 281,
         booked: false,
-        bookedBy: null,
-        purchased: false,
-        purchasedBy: null
+        bookedBy: null
     },
     {
         id: 12,
@@ -156,9 +134,7 @@ const defaultGifts = [
         article: '8769539',
         price: 504,
         booked: false,
-        bookedBy: null,
-        purchased: false,
-        purchasedBy: null
+        bookedBy: null
     },
     {
         id: 13,
@@ -169,9 +145,7 @@ const defaultGifts = [
         article: '13083152',
         price: 702,
         booked: false,
-        bookedBy: null,
-        purchased: false,
-        purchasedBy: null
+        bookedBy: null
     },
     {
         id: 14,
@@ -182,9 +156,7 @@ const defaultGifts = [
         article: '209131541',
         price: 48,
         booked: false,
-        bookedBy: null,
-        purchased: false,
-        purchasedBy: null
+        bookedBy: null
     },
     {
         id: 15,
@@ -195,9 +167,7 @@ const defaultGifts = [
         article: '3205880143',
         price: 482,
         booked: false,
-        bookedBy: null,
-        purchased: false,
-        purchasedBy: null
+        bookedBy: null
     },
     {
         id: 16,
@@ -208,9 +178,7 @@ const defaultGifts = [
         article: '1134268444',
         price: 452,
         booked: false,
-        bookedBy: null,
-        purchased: false,
-        purchasedBy: null
+        bookedBy: null
     },
     {
         id: 17,
@@ -221,9 +189,7 @@ const defaultGifts = [
         article: '1819863033',
         price: 553,
         booked: false,
-        bookedBy: null,
-        purchased: false,
-        purchasedBy: null
+        bookedBy: null
     },
     {
         id: 18,
@@ -234,9 +200,7 @@ const defaultGifts = [
         article: '2589066384',
         price: 265,
         booked: false,
-        bookedBy: null,
-        purchased: false,
-        purchasedBy: null
+        bookedBy: null
     },
     {
         id: 19,
@@ -247,9 +211,7 @@ const defaultGifts = [
         article: '1720641233',
         price: 428,
         booked: false,
-        bookedBy: null,
-        purchased: false,
-        purchasedBy: null
+        bookedBy: null
     }
 ];
 
