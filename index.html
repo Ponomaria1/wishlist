@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Подырки</title>
     <style>
-        /* ===== СТИЛИ (твои) ===== */
+        /* ===== СТИЛИ ===== */
         * {
             margin: 0;
             padding: 0;
@@ -117,7 +117,7 @@
             background: #faf8f6;
         }
         .gift-card.booked::after {
-            content: 'ЗАБРОНИРОВАН';
+            content: '🔒 ЗАБРОНИРОВАН';
             position: absolute;
             top: 15px;
             right: -30px;
@@ -235,7 +235,7 @@
             <h1>
                 <img src="images/bb.png" alt=""> выбери дары <img src="images/bb.png" alt="">
             </h1>
-            <p class="subtitle">бууб в нос </p>
+            <p class="subtitle">бууб в нос</p>
         </header>
 
         <div class="welcome-text">
@@ -252,7 +252,7 @@
 
         <div class="stats">
             <span>Всего: <strong id="totalCount">0</strong></span>
-            <span> Думают: <strong id="bookedCount">0</strong></span>
+            <span>Думают: <strong id="bookedCount">0</strong></span>
             <span>Осталось: <strong id="remainingCount">0</strong></span>
         </div>
 
@@ -260,18 +260,19 @@
         <div id="giftList" class="gift-grid"></div>
 
         <div id="bookedSection" style="display: none;">
-            <h2> забронированные дары</h2>
+            <h2>забронированные дары</h2>
             <div id="bookedList" class="gift-grid"></div>
         </div>
     </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
-        // ===== НАСТРОЙКИ SUPABASE =====
+        // ===== ПОДКЛЮЧЕНИЕ К SUPABASE =====
         const SUPABASE_URL = 'https://kthzgdrvgkaujatmpndx.supabase.co';
         const SUPABASE_KEY = 'sb_publishable_OQ44wevV1iJtIYwqeueuKg_mrpLEBLu';
-        // =============================
+        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-        // ===== ВСЕ ТВОИ 20 ПОДАРКОВ =====
+        // ===== ТВОИ 20 ПОДАРКОВ =====
         const defaultGifts = [
             { id: 1, name: 'мили чехол для наушников', image: 'https://ir-11.ozone.ru/s3/multimedia-4/wc2500/6828136024.jpg', link: 'https://ozon.ru/t/cFBeDQs', store: 'ozon', article: '3064683607', price: 275 },
             { id: 2, name: 'маленькая картина по номерам', image: 'https://ir-11.ozone.ru/s3/multimedia-1-x/wc2500/8430564381.jpg', link: 'https://ozon.ru/t/BSFPL8A', store: 'ozon', article: '3172102168', price: 197 },
@@ -290,7 +291,7 @@
             { id: 15, name: 'кьюти панда', image: 'https://ir-11.ozone.ru/s3/multimedia-1-b/wc2500/8485525811.jpg', link: 'https://ozon.ru/t/bTpQQGq', store: 'ozon', article: '3205880143', price: 482 },
             { id: 16, name: 'крем для лица нуф ниф наф', image: 'https://ir-11.ozone.ru/s3/multimedia-1-j/wc2500/11912459455.jpg', link: 'https://ozon.ru/t/bTpQ91U', store: 'ozon', article: '1134268444', price: 452 },
             { id: 17, name: 'лицевая сыроворотка', image: 'https://ir-11.ozone.ru/s3/multimedia-1-x/wc1000/8362431141.jpg', link: 'https://ozon.ru/t/OyqcfhB', store: 'ozon', article: '1819863033', price: 553 },
-            { id: 18, name: 'мне оно надо', image: 'https://ir-11.ozone.ru/s3/multimedia-j/wc1000/6740812099.jpg', link: ' https://ozon.ru/t/1fW3k10', store: 'ozon', article: '1161787031', price: 1335 },
+            { id: 18, name: 'мне оно надо', image: 'https://ir-11.ozone.ru/s3/multimedia-j/wc1000/6740812099.jpg', link: 'https://ozon.ru/t/1fW3k10', store: 'ozon', article: '1161787031', price: 1335 },
             { id: 19, name: 'захотелось мне научиться краситься', image: 'https://ir-11.ozone.ru/s3/multimedia-1-g/wc1000/8963295244.jpg', link: 'https://ozon.ru/t/bTpQlHE', store: 'ozon', article: '1720641233', price: 428 },
             { id: 20, name: 'БольшООООй дракон', image: 'https://ir-11.ozone.ru/s3/multimedia-1-w/wc1000/8145213440.jpg', link: 'https://ozon.ru/t/zLDJZTe', store: 'ozon', article: '1985939191', price: 685 }
         ];
@@ -302,86 +303,65 @@
             localStorage.setItem('deviceId', deviceId);
         }
 
-        // ===== ЗАГРУЗКА ИЗ SUPABASE =====
-        async function loadFromSupabase() {
+        // ===== ЗАГРУЗКА ДАННЫХ =====
+        async function loadGifts() {
             try {
-                const response = await fetch(`${SUPABASE_URL}/rest/v1/gifts?select=*`, {
-                    headers: {
-                        'apikey': SUPABASE_KEY,
-                        'Authorization': 'Bearer ' + SUPABASE_KEY
-                    }
-                });
-                if (!response.ok) throw new Error('Ошибка загрузки');
-                const data = await response.json();
+                const { data, error } = await supabase
+                    .from('gifts')
+                    .select('*')
+                    .order('id');
 
-                // Проверяем, есть ли данные в базе
+                if (error) throw error;
+
                 if (data && data.length > 0) {
                     gifts = data;
-                    console.log(' Загружено из Supabase:', gifts.length);
                 } else {
-                    // Если база пуста — загружаем дефолтные подарки
                     gifts = JSON.parse(JSON.stringify(defaultGifts));
-                    await saveToSupabase();
-                    console.log(' Загружены дефолтные подарки');
+                    await saveGifts();
                 }
-            } catch (error) {
-                console.log(' Ошибка загрузки, используем локальные данные');
+                render();
+            } catch (err) {
+                console.error('Ошибка загрузки:', err);
                 const saved = localStorage.getItem('gifts_backup');
-                if (saved) {
-                    gifts = JSON.parse(saved);
-                } else {
-                    gifts = JSON.parse(JSON.stringify(defaultGifts));
-                }
+                gifts = saved ? JSON.parse(saved) : JSON.parse(JSON.stringify(defaultGifts));
+                render();
             }
-            render();
         }
 
-        // ===== СОХРАНЕНИЕ В SUPABASE =====
-        async function saveToSupabase() {
+        // ===== СОХРАНЕНИЕ ДАННЫХ =====
+        async function saveGifts() {
             try {
                 for (const gift of gifts) {
-                    // Проверяем, есть ли такой подарок в базе
-                    const checkResponse = await fetch(`${SUPABASE_URL}/rest/v1/gifts?id=eq.${gift.id}`, {
-                        headers: {
-                            'apikey': SUPABASE_KEY,
-                            'Authorization': 'Bearer ' + SUPABASE_KEY
-                        }
-                    });
-                    const existing = await checkResponse.json();
+                    const { error } = await supabase
+                        .from('gifts')
+                        .upsert({
+                            id: gift.id,
+                            name: gift.name,
+                            image: gift.image,
+                            link: gift.link,
+                            store: gift.store,
+                            article: gift.article,
+                            price: gift.price,
+                            booked: gift.booked || false,
+                            bookedBy: gift.bookedBy || null
+                        }, { onConflict: 'id' });
 
-                    if (existing && existing.length > 0) {
-                        // Обновляем только поля booked и bookedBy
-                        await fetch(`${SUPABASE_URL}/rest/v1/gifts?id=eq.${gift.id}`, {
-                            method: 'PATCH',
-                            headers: {
-                                'apikey': SUPABASE_KEY,
-                                'Authorization': 'Bearer ' + SUPABASE_KEY,
-                                'Content-Type': 'application/json'
-                            },
-                            body: JSON.stringify({
-                                booked: gift.booked,
-                                bookedBy: gift.bookedBy
-                            })
-                        });
-                    } else {
-                        // Создаём новый подарок
-                        await fetch(`${SUPABASE_URL}/rest/v1/gifts`, {
-                            method: 'POST',
-                            headers: {
-                                'apikey': SUPABASE_KEY,
-                                'Authorization': 'Bearer ' + SUPABASE_KEY,
-                                'Content-Type': 'application/json'
-                            },
-                            body: JSON.stringify(gift)
-                        });
-                    }
+                    if (error) throw error;
                 }
                 localStorage.setItem('gifts_backup', JSON.stringify(gifts));
-                console.log(' Данные сохранены в Supabase');
-            } catch (error) {
-                console.log(' Ошибка сохранения:', error);
+                console.log('✅ Данные сохранены');
+            } catch (err) {
+                console.error('Ошибка сохранения:', err);
             }
         }
+
+        // ===== REALTIME ПОДПИСКА =====
+        supabase
+            .channel('gifts_changes')
+            .on('postgres_changes', { event: '*', schema: 'public', table: 'gifts' }, () => {
+                loadGifts();
+            })
+            .subscribe();
 
         // ===== РЕНДЕРИНГ =====
         function render() {
@@ -408,9 +388,9 @@
             const storeName = gift.store === 'ozon' ? 'Ozon' : 'Wildberries';
             const storeClass = gift.store === 'ozon' ? 'ozon' : 'wb';
             let actions = '';
-            if (!gift.booked) actions = `<button class="btn-book" onclick="bookGift(${gift.id})"> подумаю</button>`;
-            else if (isMine) actions = `<button class="btn-unbook" onclick="unbookGift(${gift.id})"> не получилось не фортануло</button>`;
-            else if (isOther) actions = `<div class="booked-by-other"> кто-то думает</div>`;
+            if (!gift.booked) actions = `<button class="btn-book" onclick="bookGift(${gift.id})">📌 подумаю</button>`;
+            else if (isMine) actions = `<button class="btn-unbook" onclick="unbookGift(${gift.id})">❌ не получилось не фортануло</button>`;
+            else if (isOther) actions = `<div class="booked-by-other">кто-то думает</div>`;
             return `
                 <div class="gift-card ${isBooked ? 'booked' : ''}">
                     <img src="${gift.image}" class="gift-image" onerror="this.src='https://via.placeholder.com/400x200/666/white?text=Подарок'">
@@ -432,12 +412,12 @@
         async function bookGift(id) {
             const gift = gifts.find(g => g.id === id);
             if (!gift || gift.booked) return;
-            if (!confirm(`беру на заметку "${gift.name}"? `)) return;
+            if (!confirm(`беру на заметку "${gift.name}"?`)) return;
             gift.booked = true;
             gift.bookedBy = deviceId;
-            await saveToSupabase();
+            await saveGifts();
             render();
-            alert('💭 дар твой! никто не заберёт!');
+            alert('дар твой! никто не заберёт!');
         }
 
         async function unbookGift(id) {
@@ -446,13 +426,13 @@
             if (!confirm(`подумай "${gift.name}"? ты отменишь..😢`)) return;
             gift.booked = false;
             gift.bookedBy = null;
-            await saveToSupabase();
+            await saveGifts();
             render();
-            alert(' нищита!');
+            alert('нищита!');
         }
 
         // ===== ЗАПУСК =====
-        loadFromSupabase();
+        loadGifts();
     </script>
 </body>
 </html>
