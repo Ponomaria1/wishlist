@@ -1,7 +1,7 @@
-// ===== НАСТРОЙКИ ДЛЯ SUPABASE =====
+// ===== НАСТРОЙКИ SUPABASE =====
 const SUPABASE_URL = 'https://kthzgdrvgkaujatmpndx.supabase.co';
 const SUPABASE_KEY = 'sb_publishable_OQ44wevV1iJtIYwqeueuKg_mrpLEBLu';
-// =================================
+// ================================
 
 const defaultGifts = [
     {
