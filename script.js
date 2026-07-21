@@ -1,5 +1,7 @@
+// ===== НАСТРОЙКИ ДЛЯ SUPABASE =====
 const SUPABASE_URL = 'https://kthzgdrvgkaujatmpndx.supabase.co';
 const SUPABASE_KEY = 'sb_publishable_OQ44wevV1iJtIYwqeueuKg_mrpLEBLu';
+// =================================
 
 const defaultGifts = [
     {
@@ -264,20 +266,21 @@ function getDeviceId() {
     return id;
 }
 
-// ===== ЗАГРУЗКА С СЕРВЕРА =====
 async function loadFromServer() {
     try {
-        const response = await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}/latest`, {
-            headers: { 'X-Master-Key': API_KEY }
+        const response = await fetch(`${SUPABASE_URL}/rest/v1/gifts?select=*`, {
+            headers: {
+                'apikey': SUPABASE_KEY,
+                'Authorization': `Bearer ${SUPABASE_KEY}`
+            }
         });
         
         if (!response.ok) throw new Error('Ошибка загрузки');
         
         const data = await response.json();
-        const serverGifts = data.record.gifts || [];
         
-        if (serverGifts.length > 0) {
-            gifts = serverGifts;
+        if (data && data.length > 0) {
+            gifts = data;
             localStorage.setItem('gifts_backup', JSON.stringify(gifts));
         } else {
             gifts = JSON.parse(JSON.stringify(defaultGifts));
@@ -295,43 +298,38 @@ async function loadFromServer() {
     render();
 }
 
-// ===== СОХРАНЕНИЕ НА СЕРВЕР =====
 async function saveToServer() {
     if (isLoading) return;
     isLoading = true;
     
     try {
-        const response = await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}`, {
-            method: 'PUT',
+        await fetch(`${SUPABASE_URL}/rest/v1/gifts?booked=eq.false`, {
+            method: 'DELETE',
             headers: {
-                'Content-Type': 'application/json',
-                'X-Master-Key': API_KEY
-            },
-            body: JSON.stringify({ gifts: gifts })
+                'apikey': SUPABASE_KEY,
+                'Authorization': `Bearer ${SUPABASE_KEY}`
+            }
         });
         
-        if (response.ok) {
-            console.log('Данные сохранены на сервере');
-            localStorage.setItem('gifts_backup', JSON.stringify(gifts));
-        } else {
-            console.log('Ошибка сохранения на сервере');
+        for (const gift of gifts) {
+            await fetch(`${SUPABASE_URL}/rest/v1/gifts`, {
+                method: 'POST',
+                headers: {
+                    'apikey': SUPABASE_KEY,
+                    'Authorization': `Bearer ${SUPABASE_KEY}`,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(gift)
+            });
         }
+        
+        console.log('Данные сохранены в Supabase');
+        localStorage.setItem('gifts_backup', JSON.stringify(gifts));
     } catch (error) {
         console.log('Ошибка при сохранении:', error);
     }
     
     isLoading = false;
-}
-
-// ===== ОСТАЛЬНЫЕ ФУНКЦИИ =====
-function loadGifts() {
-    // Заменяем на загрузку с сервера
-    loadFromServer();
-}
-
-function saveGifts() {
-    // Заменяем на сохранение на сервер
-    saveToServer();
 }
 
 function updateStats() {
@@ -360,7 +358,6 @@ function render() {
     if (available.length === 0) {
         giftList.innerHTML = `
             <div class="empty-message">
-                
                 <p>все дары уже забронированы!</p>
             </div>
         `;
@@ -398,7 +395,7 @@ function createGiftCard(gift, isBooked = false) {
     if (!gift.booked) {
         actionsHTML = `
             <button class="btn-book" onclick="bookGift(${gift.id})">
-                 подумаю
+                подумаю
             </button>
         `;
     }
@@ -406,7 +403,7 @@ function createGiftCard(gift, isBooked = false) {
     if (isBookedByMe) {
         actionsHTML = `
             <button class="btn-unbook" onclick="unbookGift(${gift.id})">
-                 не получилось не фортануло
+                не получилось не фортануло
             </button>
         `;
     }
@@ -414,7 +411,7 @@ function createGiftCard(gift, isBooked = false) {
     if (isBookedByOther) {
         actionsHTML = `
             <div style="width: 100%; text-align: center; color: #7a6a5a; font-size: 14px; font-weight: 500; padding: 8px 0;">
-                🌸 кто-то думает
+                кто-то думает
             </div>
         `;
     }
@@ -430,9 +427,9 @@ function createGiftCard(gift, isBooked = false) {
                         <span class="store ${storeClass}">${storeName}</span>
                         <span style="margin-left: 10px;">Артикул: ${gift.article}</span>
                     </div>
-                    <a href="${gift.link}" target="_blank" class="gift-link">🔗 Ссылка на товар</a>
+                    <a href="${gift.link}" target="_blank" class="gift-link">Ссылка на товар</a>
                 </div>
-                <div class="gift-price">${gift.price.toLocaleString()} ₽</div>
+                <div class="gift-price">${gift.price.toLocaleString()} руб.</div>
                 <div class="gift-actions">
                     ${actionsHTML}
                 </div>
@@ -445,10 +442,10 @@ async function bookGift(giftId) {
     const gift = gifts.find(g => g.id === giftId);
     if (!gift) return;
     if (gift.booked) {
-        alert('над даром уже думают! ');
+        alert('над даром уже думают!');
         return;
     }
-    if (confirm(`беру на заметку "${gift.name}"? `)) {
+    if (confirm(`беру на заметку "${gift.name}"?`)) {
         gift.booked = true;
         gift.bookedBy = deviceId;
         await saveToServer();
@@ -463,7 +460,7 @@ async function unbookGift(giftId) {
         alert('это не твой дар, не отменяй!');
         return;
     }
-    if (confirm(`подумай "${gift.name}"? ты отменишь..😢`)) {
+    if (confirm(`подумай "${gift.name}"? ты отменишь..`)) {
         gift.booked = false;
         gift.bookedBy = null;
         await saveToServer();
@@ -472,7 +469,6 @@ async function unbookGift(giftId) {
     }
 }
 
-// ===== ЗАПУСК =====
 deviceId = getDeviceId();
 
 const giftList = document.getElementById('giftList');
@@ -487,7 +483,6 @@ if (giftList) {
 
 loadFromServer();
 
-// ===== КОМАНДЫ ДЛЯ КОНСОЛИ =====
 function addGift(name, image, link, store, article, price) {
     const newGift = {
         id: Date.now(),
@@ -523,3 +518,8 @@ function resetAll() {
         console.log('всё сброшено!');
     }
 }
+
+console.log('команды для консоли:');
+console.log('  addGift(name, image, link, store, article, price) - добавить дар');
+console.log('  removeGift(id) - удалить дар');
+console.log('  resetAll() - сбросить всё');
